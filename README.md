@@ -17,4 +17,4 @@ make
 
 ## Running
 
-./chess
+.\vice
