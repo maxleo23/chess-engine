@@ -95,10 +95,8 @@ void InitSq120To64(){
             Sq64ToSq120[sq64] = sq;
             Sq120ToSq64[sq] = sq64;
             sq64++;     
-        }
-        
+        }    
     }
-    
 }
 
 void AllInit() {
@@ -106,4 +104,5 @@ void AllInit() {
     InitBitMasks();
     InitHashKeys();
     InitFilesRanksBrd();
+    InitMvvLva();
 }

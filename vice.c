@@ -2,23 +2,13 @@
 #include "defs.h"
 #include <stdlib.h>
 
-#define PAWNMOVESW "rnbqkb1r/pp1p1pPp/8/2p1pP2/1P1P4/3P3P/P1P1P3/RNBQKBNR w KQkq e6 0 1"
-#define PAWNMOVESB "rnbqkbnr/p1p1p3/3p3p/1p1p4/2P1Pp2/8/PP1P1PpP/RNBQKB1R b KQkq e3 0 1"
+#define WAC1 "r1b1k2r/ppppnppp/2n2q2/2b5/3NP3/2P1B3/PP3PPP/RN1QKB1R w KQkq - 0 1"
+#define PERFT "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"
 
 int main()
 {
-
     AllInit();
-
-    S_BOARD board[1];
-    S_MOVELIST list[1];
-
-    //ParseFen(PAWNMOVESW, board);
-    ParseFen(PAWNMOVESB, board);
-    GenarateAllMoves(board, list);
-  
-    //PrintMoveList(list);
-
+    Uci_Loop();   
     return 0;
 }
 

@@ -5,7 +5,7 @@
 
 // For Debug --- Found in a Book "Begining For The C++"
 
-#define DEBUG
+//#define DEBUG
 
 #ifndef DEBUG
 #define ASSERT(n)
@@ -23,8 +23,9 @@
 
 typedef unsigned long long U64;
 
-#define NAME "Name"
+#define NAME "Vice 1.0"
 #define BRD_SQ_NUM 120
+#define MAXDEPTH 64
 
 #define MAXGAMEMOVES 2048   
 #define MAXPOSITIONMOVES 256
@@ -61,6 +62,15 @@ typedef struct {
     S_MOVE moves[MAXPOSITIONMOVES];
     int count;
 } S_MOVELIST;
+
+typedef struct {
+    U64 posKey;
+    int move;
+} S_PVENTRY;
+typedef struct {
+    S_PVENTRY *pTable;
+    int numEntries;
+} S_PVTABLE;
 
 typedef struct {
 
@@ -102,12 +112,34 @@ typedef struct {
     // Piece List
     int pList[13] [10];
 
+    S_PVTABLE PvTable[1];
+    int PvArray[MAXDEPTH];
 
-    /*  pList[wN] [0] = E1;
-        pList[wN] [1] = D4;
+    int searchHistory[13][BRD_SQ_NUM];
+    int searchKillers[2][MAXDEPTH];
 
-     */
 } S_BOARD ;
+
+typedef struct {
+        
+    int starttime;
+    int stoptime;
+    int depth;
+    int depthset;
+    int timeset;
+    int movestogo;
+    int infinite;
+
+    long nodes;
+
+    int quit;
+    int stopped;
+
+    float fh;
+    float fhf;
+
+} S_SEARCHINFO;
+
 
 /* GAME MOVES */
 #define FROMSQ(m) ((m) & 0x7F)
@@ -121,6 +153,8 @@ typedef struct {
 
 #define MFLAGCAP 0x7C000
 #define MFLAGPROM 0xF00000
+
+#define NOMOVE 0
 
 /* MACROS */
 
@@ -156,6 +190,7 @@ extern int PieceMaj[13];
 extern int PieceMin[13];
 extern int PieceVal[13];
 extern int PieceCol[13];
+extern int PiecePawn[13];
 
 extern int FilesBrd[BRD_SQ_NUM];
 extern int RanksBrd[BRD_SQ_NUM];
@@ -193,6 +228,7 @@ extern int SqAttacked(const int sq, const int side, const S_BOARD *pos);
 extern char *PrMove(const int move);
 extern char *PrSq(const int sq);
 extern void PrintMoveList(const S_MOVELIST *list);
+extern int ParseMove(char *ptrChar, S_BOARD *pos);
 
 // validate.c 
 extern int SqOnBoard(const int sq);
@@ -203,5 +239,35 @@ extern int PieceValid(const int pce);
 
 // movegen.c
 extern void GenarateAllMoves( const S_BOARD *pos, S_MOVELIST *list );
+extern void GenarateAllCaps( const S_BOARD *pos, S_MOVELIST *list );
+extern int MoveExists(S_BOARD *pos, const int move);
+extern void InitMvvLva();
+
+// makemove.c
+extern int MakeMove(S_BOARD *pos, int move );
+extern void TakeMove(S_BOARD *pos);
+
+//perft.c
+extern void PerftTest(int depth, S_BOARD *pos);
+
+// search.c
+extern void SearchPosition(S_BOARD *pos, S_SEARCHINFO *info);
+extern void ClearPvTable(S_PVTABLE *table);
+
+// misc.c
+extern int GetTimeMs();
+extern void ReadInput(S_SEARCHINFO *info);
+
+// pvtable.c
+extern void  InitPvTable(S_PVTABLE *table);
+extern void StorePvMove(const S_BOARD *pos, const int move);
+extern int ProbePvTable(const S_BOARD *pos);
+extern int GetPvLine(const int depth, S_BOARD *pos);
+
+// evaluated.c
+extern int EvalPosition(const S_BOARD *pos);
+
+//uci.c
+extern void Uci_Loop();
 
 #endif  
